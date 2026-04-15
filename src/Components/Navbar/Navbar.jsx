@@ -35,12 +35,13 @@ function Navbar() {
           <li className="link"><a href="/reviews">Reviews</a></li>
           {sessionStorage.getItem("auth-token") ? (
             <>
-              <li className="link">
-                <a href="#">Welcome, {sessionStorage.getItem("name")}</a>
-                 <div className="dropdown">
-                    <a href="/profile">Your Profile</a>
+              <li className="link" style={{position: 'relative'}}>
+                <a href="#">Welcome, {sessionStorage.getItem("name")} ▾</a>
+                <div className="dropdown">
+                  <a href="/profile">Your Profile</a>
+                  <a href="/reports">Your Reports</a>
                 </div>
-                </li>   
+              </li>
               <li className="link">
                 <button className="btn1" onClick={logout}>Logout</button>
               </li>

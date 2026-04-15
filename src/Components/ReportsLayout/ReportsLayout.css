@@ -1,0 +1,54 @@
+.reports-container {
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 2rem;
+}
+
+.reports-container h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.reports-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reports-table th,
+.reports-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.reports-table th {
+  background-color: #2190FF;
+  color: white;
+}
+
+.reports-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.btn-view {
+  background-color: #2190FF;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  width: auto;
+  margin-top: 0;
+}
+
+.btn-download {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: auto;
+  margin-top: 0;
+}

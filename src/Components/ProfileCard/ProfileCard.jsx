@@ -1,26 +1,148 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { API_URL } from "../../config";
+import { useNavigate } from "react-router-dom";
 import './ProfileCard.css';
 
 const ProfileCard = () => {
-  const name = sessionStorage.getItem("name");
-  const email = sessionStorage.getItem("email");
-  const phone = sessionStorage.getItem("phone");
+  const [userDetails, setUserDetails] = useState({});
+  const [updatedDetails, setUpdatedDetails] = useState({});
+  const [editMode, setEditMode] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authtoken = sessionStorage.getItem("auth-token");
+    if (!authtoken) {
+      navigate("/login");
+    } else {
+      fetchUserProfile();
+    }
+  }, [navigate]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const authtoken = sessionStorage.getItem("auth-token");
+      const email = sessionStorage.getItem("email");
+      if (!authtoken) {
+        navigate("/login");
+      } else {
+        const response = await fetch(`${API_URL}/api/auth/user`, {
+          headers: {
+            "Authorization": `Bearer ${authtoken}`,
+            "Email": email,
+          },
+        });
+        if (response.ok) {
+          const user = await response.json();
+          setUserDetails(user);
+          setUpdatedDetails(user);
+        } else {
+          // fallback to session storage if API fails
+          setUserDetails({
+            name: sessionStorage.getItem("name"),
+            email: sessionStorage.getItem("email"),
+            phone: sessionStorage.getItem("phone"),
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      setUserDetails({
+        name: sessionStorage.getItem("name"),
+        email: sessionStorage.getItem("email"),
+        phone: sessionStorage.getItem("phone"),
+      });
+    }
+  };
+
+  const handleEdit = () => {
+    setEditMode(true);
+  };
+
+  const handleInputChange = (e) => {
+    setUpdatedDetails({
+      ...updatedDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const authtoken = sessionStorage.getItem("auth-token");
+      const email = sessionStorage.getItem("email");
+      if (!authtoken || !email) {
+        navigate("/login");
+        return;
+      }
+      const response = await fetch(`${API_URL}/api/auth/user`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${authtoken}`,
+          "Content-Type": "application/json",
+          "Email": email,
+        },
+        body: JSON.stringify(updatedDetails),
+      });
+      if (response.ok) {
+        sessionStorage.setItem("name", updatedDetails.name);
+        sessionStorage.setItem("phone", updatedDetails.phone);
+        setUserDetails(updatedDetails);
+        setEditMode(false);
+        alert("Profile Updated Successfully!");
+        navigate("/");
+      } else {
+        throw new Error("Failed to update profile");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
-    <div className="profile-card-container">
-      <h2>My Profile</h2>
-      <div className="profile-card">
-        <div className="profile-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="#2190FF" viewBox="0 0 16 16">
-            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-          </svg>
-        </div>
+    <div className="profile-container">
+      {editMode ? (
+        <form onSubmit={handleSubmit}>
+          <h2>Edit Profile</h2>
+          <label>
+            Email
+            <input
+              type="email"
+              name="email"
+              value={userDetails.email || ''}
+              disabled
+              className="form-control"
+            />
+          </label>
+          <label>
+            Name
+            <input
+              type="text"
+              name="name"
+              value={updatedDetails.name || ''}
+              onChange={handleInputChange}
+              className="form-control"
+            />
+          </label>
+          <label>
+            Phone
+            <input
+              type="tel"
+              name="phone"
+              value={updatedDetails.phone || ''}
+              onChange={handleInputChange}
+              className="form-control"
+            />
+          </label>
+          <button type="submit" className="btn btn-primary">Save</button>
+        </form>
+      ) : (
         <div className="profile-details">
-          <p><strong>Name:</strong> {name}</p>
-          <p><strong>Email:</strong> {email}</p>
-          <p><strong>Phone:</strong> {phone}</p>
+          <h1>Welcome, {userDetails.name}</h1>
+          <p><strong>Email:</strong> {userDetails.email}</p>
+          <p><strong>Phone:</strong> {userDetails.phone}</p>
+          <button onClick={handleEdit} className="btn btn-primary">Edit</button>
         </div>
-      </div>
+      )}
     </div>
   );
 };
