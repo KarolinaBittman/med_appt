@@ -37,7 +37,10 @@ function Navbar() {
             <>
               <li className="link">
                 <a href="#">Welcome, {sessionStorage.getItem("name")}</a>
-              </li>
+                 <div className="dropdown">
+                    <a href="/profile">Your Profile</a>
+                </div>
+                </li>   
               <li className="link">
                 <button className="btn1" onClick={logout}>Logout</button>
               </li>
