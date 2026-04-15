@@ -19,6 +19,9 @@ const DoctorCard = ({ name, speciality, experience, ratings }) => {
       ...appointmentData,
     };
     setAppointments([...appointments, newAppointment]);
+
+     sessionStorage.setItem("appointment", JSON.stringify(newAppointment));
+    window.location.reload();
   };
 
   return (
