@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import './Navbar.css';
+import { Link } from 'react-router-dom';
 
 function Navbar() {
   const [isActive, setIsActive] = useState(false);
 
   const handleClick = () => {
     setIsActive(!isActive);
+  };
+
+  const logout = () => {
+    sessionStorage.removeItem("auth-token");
+    sessionStorage.removeItem("name");
+    sessionStorage.removeItem("phone");
+    sessionStorage.removeItem("email");
+    window.location.reload();
   };
 
   return (
@@ -33,12 +42,25 @@ function Navbar() {
         <ul className={`nav__links ${isActive ? "active" : ""}`}>
           <li className="link"><a href="/">Home</a></li>
           <li className="link"><a href="#">Appointments</a></li>
-          <li className="link">
-            <a href="/signup"><button className="btn1">Sign Up</button></a>
-          </li>
-          <li className="link">
-            <a href="/login"><button className="btn1">Login</button></a>
-          </li>
+          {sessionStorage.getItem("auth-token") ? (
+            <>
+              <li className="link">
+                <a href="#">Welcome, {sessionStorage.getItem("name")}</a>
+              </li>
+              <li className="link">
+                <button className="btn1" onClick={logout}>Logout</button>
+              </li>
+            </>
+          ) : (
+            <>
+              <li className="link">
+                <a href="/signup"><button className="btn1">Sign Up</button></a>
+              </li>
+              <li className="link">
+                <a href="/login"><button className="btn1">Login</button></a>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </div>
