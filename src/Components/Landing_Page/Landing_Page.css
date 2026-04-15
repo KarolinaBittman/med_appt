@@ -1,4 +1,7 @@
-* {
+* body {
+    background-color: white;
+}
+{
     margin: 0;
     font-family: "Poppins", sans-serif;
     box-sizing: border-box;
@@ -6,7 +9,7 @@
 .hero-section {
     height: 100vh;
     padding-top: 15rem;
-    background-color: transparent;
+    background-color: white;
     z-index: -1;
 }
 .hero-section .flex-hero {
